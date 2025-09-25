@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.Constants;
+import frc.robot.lib.auto.FollowPath;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -96,7 +97,35 @@ public class Robot extends LoggedRobot {
         // for elastic dashboard
         WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
 
+        // Link FollowPath logging consumers
+        linkFollowPathLogging();
+
         m_robotContainer = RobotContainer.getInstance();
+    }
+
+    /**
+     * Links FollowPath logging consumers to AdvantageKit Logger.recordOutput
+     */
+    private void linkFollowPathLogging() {
+        // Pose logging consumer
+        FollowPath.setPoseLoggingConsumer(pair -> {
+            Logger.recordOutput(pair.getFirst(), pair.getSecond());
+        });
+
+        // Translation list logging consumer
+        FollowPath.setTranslationListLoggingConsumer(pair -> {
+            Logger.recordOutput(pair.getFirst(), pair.getSecond());
+        });
+
+        // Double logging consumer
+        FollowPath.setDoubleLoggingConsumer(pair -> {
+            Logger.recordOutput(pair.getFirst(), pair.getSecond());
+        });
+
+        // Boolean logging consumer
+        FollowPath.setBooleanLoggingConsumer(pair -> {
+            Logger.recordOutput(pair.getFirst(), pair.getSecond());
+        });
     }
 
     /**
